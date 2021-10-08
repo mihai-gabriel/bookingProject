@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_level %}
+    <li>
+        <a href="#">
+            Accounts
+        </a>
+    </li>
+    <li class="is-active">
+        <a href="#">
+            <span>Profile</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block page_header %}
+    <div class="container is-max-desktop mt-3 pb-3">
+        <div class="content">
+            <h1 class="is-size-4">Profile</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="cancelConfirmation" class="modal">
+        <div id="modalBackground" class="modal-background"></div>
+
+        <div class="modal-card mt-6 has-text-centered">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Are you sure?</p>
+            </header>
+            <section class="modal-card-body">
+                <form>
+                    {% csrf_token %}
+                    <button id="confirmationButton" class="button is-danger" type="submit">Yes</button>
+                    <button id="exitButton" class="button is-light">No</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <div class="container mt-5 pb-5 is-max-desktop extra-padding">
+        <div class="columns">
+            <div class="column is-one-third">
+                <h2 class="title">{{ user.username }}</h2>
+                <h4 class="subtitle">Your orders</h4>
+            </div>
+            <div class="column">
+                {% for order in user.order_set.all %}
+                    <div class="box" id="order-{{ order.pk }}">
+                        <h2 class="subtitle is-5 mb-0">{{ order.room.hotel.name }} - <small><a href="{{ order.room.get_absolute_url }}">room {{ order.room.number }}</a></small></h2>
+                        <h5><small class="has-text-grey">{{ order.start_date }} - {{ order.end_date }}</small></h5>
+                        <hr>
+                        <p>{{ order.room.description }}</p>
+                        <div class="columns">
+                            <div class="column has-text-left" style="display: flex; align-items: flex-end">
+                                <h4>
+                                    <span class="has-text-primary">{{ order.get_price }} €</span>
+                                    <span><small>({{ order.number_of_people }} people)</small></span>
+                                </h4>
+                            </div>
+                            <div class="column has-text-right">
+                                <button id="cancel-{{ order.pk }}" itemid="{{ order.pk }}" class="button is-danger">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let cancel_buttons = document.querySelectorAll('*[id^="cancel-"]');
+        let cancel_modal = document.getElementById("cancelConfirmation");
+        let exit_button = document.getElementById("exitButton");
+        let confirmation_button = document.getElementById("confirmationButton");
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        exit_button.addEventListener("click", event => {
+            event.preventDefault();
+            cancel_modal.style.display = "none";
+        });
+
+        cancel_buttons.forEach(element => {
+            element.addEventListener('click', event => {
+                let order_id = element.attributes.itemid.value;
+                cancel_modal.style.display = "block";
+                confirmation_button.addEventListener("click", event => {
+                    event.preventDefault();
+                    deleteOrder(order_id);
+                    cancel_modal.style.display = "none";
+                    document.getElementById(`order-${order_id}`).style.display = "none";
+                });
+            });
+        });
+
+        async function deleteOrder(orderID) {
+            const url = "{% url 'booking:remove-order' %}";
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({"order": orderID})
+            });
+
+            return response.json();
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_level %}
+    <li class="is-active">
+        <a href="#">
+            <span>FAQ</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block page_header %}
+    <div class="container is-max-desktop mt-3 pb-3">
+        <div class="content">
+            <h1 class="is-size-4">Frequently Asked Questions</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container is-max-desktop" style="padding-bottom: 200px;">
+        <div class="content mt-6 mb-6">
+            <section>
+                <h2 class="subtitle is-5 mb-2">Why have you created this website?</h2>
+                <p>For fun</p>
+            </section>
+            <section class="mt-5">
+                <h2 class="subtitle is-5 mb-2">Who are you?</h2>
+                <p>A student</p>
+            </section>
+            <section class="mt-5">
+                <h2 class="subtitle is-5 mb-2">Why am I here?</h2>
+                <p>Curiosity</p>
+            </section>
+            <section class="mt-5">
+                <h2 class="subtitle is-5 mb-2">How come I never knew about your github profile?</h2>
+                <p>I know right?! You can check it out <a href="https://github.com/mihai-gabriel" target="_blank">here</a>!</p>
+            </section>
+        </div>
+    </div>
+{% endblock %}

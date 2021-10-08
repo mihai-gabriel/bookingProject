@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block breadcrumb_level %}
+    <li>
+        <a href="{% url 'booking:hotels' %}">
+            <span>Hotels</span>
+        </a>
+    </li>
+    <li class="is-active">
+        <a href="#">
+            <span>{{ hotel.name }}</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block page_header %}
+    <div class="container is-max-desktop mt-4">
+        <section class="hero pb-5 hotel">
+            <hr class="dark-outline">
+            <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> {{ hotel.location }}</p>
+            <h5 class="title has-text-justified has-text-centered">{{ hotel.description }}</h5>
+        </section>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container is-max-desktop mt-4 mb-4">
+        {% for room in hotel.room_set.all %}
+            <div class="box" id="room-box-{{ room.number }}">
+                <a href="{{ room.get_absolute_url }}"  id="room-{{ room.number }}">
+                    <p>Room {{ room.number }}</p>
+                </a>
+                <p>{{ room.description }}</p>
+            </div>
+        {% endfor %}
+        <p id="result"></p>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function updateAvailability() {
+            fetch("{% url 'booking:check-rooms' hotel.pk %}")
+                .then(response => response.json())
+                .then(data => {
+                    Object.keys(data).forEach(key => {
+                        let room_box = document.getElementById("room-box-" + key);
+                        let room_button = document.getElementById("room-" + key);
+                        if (data[key] === false) {
+                            room_box.classList.add("box-unavailable");
+                            room_button.addEventListener("click", event => {
+                                event.preventDefault();
+                            });
+                        }
+                    });
+                });
+        }
+
+        updateAvailability();
+    </script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+
+{% block breadcrumb_level %}
+    <li>
+        <a href="{% url 'booking:hotels' %}">
+            <span>Hotels</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ room.hotel.get_absolute_url }}">
+            <span>{{ room.hotel.name }}</span>
+        </a>
+    </li>
+    <li class="is-active">
+        <a href="#">
+            <span>Room {{ room.id }}</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block page_header %}
+    <div class="container is-max-desktop mt-3 pb-3">
+        <div class="content">
+            <h1 class="is-size-4">{{ room.hotel }}</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container is-max-desktop">
+        {% if not room.available %}
+            <div id="notification" class="notification is-danger mt-2">
+                <button id="closeNotification" class="delete"></button>
+                <p>This room is unavailable/already booked, orders will not be registered!</p>
+            </div>
+        {% endif %}
+        <div class="errors">{{ room_error }}</div>
+        <div class="columns mt-4 mb-4">
+            <div class="column">
+                <h3 class="subtitle">Room {{ room.id }}</h3>
+                <p>{{ room.description }}</p>
+            </div>
+            <div class="column">
+                <form method="post" action="{% url 'booking:order_process' %}">
+                    {% csrf_token %}
+                    {% for field in order_form %}
+                        {% if field.is_hidden %}
+                            <input class="input" type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" value="{{ field.value }}" id="{{ field.id_for_label }}">
+                        {% else %}
+                            <div class="field">
+                                <label class="label" for="{{ field.id_for_label }}">{{ field.label }}: </label>
+                                <input class="input" type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" autofocus required maxlength="150" id="{{ field.id_for_label }}">
+                                <small>{{ field.help_text }}</small>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <input type="submit" id="submitButton" class="button is-primary" value="Book for {{ room.price }} €">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let submitButton = document.getElementById("submitButton");
+        let initialRoomPrice = {{ room.price }};
+        let numberOfPeople = document.getElementById("id_number_of_people");
+        let finalPrice = 0;
+        let closeNotification = document.getElementById("closeNotification");
+        let notification = document.getElementById("notification");
+
+        numberOfPeople.addEventListener("change", event => {
+            finalPrice = parseInt(initialRoomPrice) * parseInt(numberOfPeople.value);
+            submitButton.value = `Book for ${finalPrice.toString()} €`;
+        });
+
+        closeNotification.addEventListener("click", event => {
+            notification.style.display = 'none';
+        });
+    </script>
+{% endblock %}

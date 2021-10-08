@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_level %}
+    <li class="is-active">
+        <a href="#">
+            <span>Hotels</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block page_header %}
+    <div class="container is-max-desktop mt-3 pb-3">
+        <div class="content">
+            <h1 class="is-size-4">All the available hotels</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container is-max-desktop">
+        <div class="content extra-padding">
+            {% for letter, hotels in result.items %}
+                <h5 class="pt-2">{{ letter }}</h5>
+                <ul>
+                    {% for hotel in hotels %}
+                        <li><a href="{% url 'booking:hotel' hotel.pk %}">{{ hotel }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

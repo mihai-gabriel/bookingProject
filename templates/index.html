@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block content %}
+    <section class="hero is-halfheight">
+        <div class="hero-body">
+            <div class="container has-text-centered extra-padding">
+                <div class="columns is-centered">
+                    <div class="column is-half is-center">
+                        <div class="section pb-0">
+                            <p class="title">
+                            Hotel booking
+                            </p>
+                            <p class="subtitle">
+                                An example project for booking
+                            </p>
+                            <form method="post">
+                                <div class="columns">
+                                    <div class="column">
+                                        {% csrf_token %}
+                                        <input id="searchBox" class="input" type="text" name="search" placeholder="Search hotel..." required maxlength="150">
+                                    </div>
+                                    <div class="column is-one-fifth">
+                                        <input type="submit" id="searchButton" class="input button is-primary" value="Search">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="section pt-0 mt-4 has-text-left">
+                            <ul id="result"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let searchBox = document.getElementById("searchBox");
+        let resultBox = document.getElementById("result");
+        let searchButton = document.getElementById("searchButton");
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        function createLiElement(text, pk) {
+            let node = document.createElement("li");
+            let anchor = document.createElement("a");
+            let textNode = document.createTextNode(text);
+
+            anchor.appendChild(textNode);
+            anchor.href = `/hotel/${pk}/`
+            node.appendChild(anchor);
+            return node;
+        }
+
+        searchButton.addEventListener("click", event => {
+            resultBox.innerHTML = "";
+            event.preventDefault();
+            if (searchBox.value !== "") {
+                searchHotels(searchBox.value).then(response => {
+                    let result = JSON.parse(response['search_result']);
+                    console.log(result);
+                    result.forEach(elem => {
+                        let fields = elem['fields'];
+                        resultBox.appendChild(createLiElement(`${fields['name']} > ${fields['location']}`, elem['pk']));
+                    });
+                });
+            }
+        });
+
+            async function searchHotels(hotelName) {
+                const url = "{% url 'booking:search-hotel' %}";
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({"search": hotelName})
+                });
+
+                return response.json();
+            }
+    </script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb_level %}
+    <li class="is-active">
+        <a href="#">
+            <span>Order</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block page_header %}
+    <div class="container is-max-desktop mt-3 pb-3">
+        <div class="content">
+            <h1 class="is-size-4">Order Completed</h1>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container is-max-desktop">
+        <div class="content mt-4 has-text-centered extra-padding" style="padding-bottom: 250px">
+            <h2 class="title">Thank you!</h2>
+            <h3 class="subtitle has-text-grey">Your order has been processed</h3>
+        </div>
+    </div>
+{% endblock %}

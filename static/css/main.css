@@ -1,0 +1,81 @@
+body {
+    padding-top: 40px;
+    font-family: 'Noto Sans', sans-serif !important;
+    background-image: linear-gradient(to right, rgb(243, 243, 243) 0%, rgb(255 255 255) 15%, rgb(255 255 255) 85%, rgb(243, 243, 243) 100%)
+}
+
+.navbar {
+    background: none;
+}
+
+nav.breadcrumb * {
+    font-size: 0.9rem !important;
+    color: #5b5b5b;
+}
+
+a.navbar-item:hover {
+    background: none !important;
+    font-weight: bold;
+}
+
+.extra-padding {
+    padding-top: 40px;
+    min-height: 350px;
+}
+
+.background-image {
+    background-position: center;
+    background-size: cover;
+}
+
+.footer {
+    background-color: #1b1b1b;
+    margin-top: 150px;
+}
+
+.page-header {
+    background-color: #F2F2F2;
+}
+
+hr {
+    margin: 1rem 0;
+}
+
+.hotel {
+    justify-content: flex-start !important;
+}
+
+.box-unavailable {
+    color: grey !important;
+}
+
+.box-unavailable a {
+    color: grey !important;
+}
+
+footer .subtitle {
+    color: #f0f0f0;
+}
+
+footer {
+    height: 150px;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.red-color {
+    color: #FF4136;
+}
+
+a.author {
+    color: #DDDDDD;
+}
+
+a.author:hover {
+    color: #0074D9;
+}
+
+.dark-outline {
+    background-color: #EBEBEB;
+}
